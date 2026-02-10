@@ -3,8 +3,6 @@ import { getAndroidDeviceName, getAndroidPlatformVersion, getAppPath } from 'lib
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { config } = require('./wdio.shared.conf')
 
-const headless = process.argv.includes('--headless')
-
 const browserOptions = {
     args: [
         '--allowed-ips',
@@ -15,11 +13,8 @@ const browserOptions = {
         '--disable-infobars',
         '--window-size=1366,784',
         '--disable-setuid-sandbox',
+        '--headless=new',
     ],
-}
-
-if (headless) {
-    browserOptions.args.push('headless=new')
 }
 
 const browserCap = {
