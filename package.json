@@ -8,7 +8,8 @@
     "test-android": "wdio run ./configs/wdio.android.conf.ts",
     "test-ios": "wdio run ./configs/wdio.ios.conf.ts",
     "test-android-headless": "wdio run ./configs/wdio.android.conf.ts --headless",
-    "test-ios-headless": "wdio run ./configs/wdio.ios.conf.ts --headless"
+    "test-ios-headless": "wdio run ./configs/wdio.ios.conf.ts --headless",
+    "test-ci-local": "wdio run ./configs/wdio.ci-local.conf.ts"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",

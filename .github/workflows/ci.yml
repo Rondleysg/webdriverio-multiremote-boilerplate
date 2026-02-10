@@ -6,11 +6,15 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: android-ci
+  cancel-in-progress: false
+
 jobs:
   build-and-test:
     name: Build & Test
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+    runs-on: [self-hosted, windows]
+    timeout-minutes: 60
     
     steps:
       - name: Checkout
@@ -23,27 +27,39 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build
         run: npm run build
 
       - name: Download Android APK
+        shell: powershell
         run: |
-          mkdir -p apps
-          curl -sL -o apps/android.wdio.native.app.v2.0.0.apk \
-            "https://github.com/webdriverio/native-demo-app/releases/download/v2.0.0/android.wdio.native.app.v2.0.0.apk"
+          if (!(Test-Path "apps")) {
+            New-Item -ItemType Directory -Path "apps"
+          }
 
-      - name: Test Android (emulator)
-        uses: ReactiveCircus/android-emulator-runner@v2
-        with:
-          api-level: 34
-          arch: x86_64
-          profile: pixel_7
-          avd-name: Android_Test
-          script: npm run test-android-headless
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
-          disable-animations: true
+          Invoke-WebRequest `
+            -Uri "https://github.com/webdriverio/native-demo-app/releases/download/v2.0.0/android.wdio.native.app.v2.0.0.apk" `
+            -OutFile "apps/android.wdio.native.app.v2.0.0.apk"
+
+      - name: Start Android Emulator
+        shell: powershell
+        run: |
+          Start-Process powershell -ArgumentList `
+            "-NoProfile -ExecutionPolicy Bypass -File scripts/start-emulator.ps1"
+
+      - name: Wait Emulator Boot
+        shell: powershell
+        run: scripts/wait-emulator.ps1
+
+      - name: Run E2E tests
+        run: npm run test-ci-local
+
+      - name: Shutdown Emulator
+        if: always()
+        shell: powershell
+        run: adb emu kill
 
   release:
     name: Semantic Release
