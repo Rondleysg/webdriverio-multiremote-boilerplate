@@ -1,6 +1,7 @@
-import { BUNDLE_ID, PACKAGE_NAME } from "test-data/e2e/Constants"
+import type { Browser } from 'webdriverio'
+import { BUNDLE_ID, PACKAGE_NAME } from '../test-data/e2e/Constants'
 
-export async function loginFixture(browser: WebdriverIO.Browser) {
+export async function loginFixture(browser: Browser) {
     const emailInput = await browser.$('~email-input')
     const passwordInput = await browser.$('~password-input')
     const loginButton = await browser.$('~login-button')
@@ -12,7 +13,7 @@ export async function loginFixture(browser: WebdriverIO.Browser) {
     await browser.$('~home-screen').waitForDisplayed()
 }
 
-export async function reLaunchApp(emulator: WebdriverIO.Browser) {
+export async function reLaunchApp(emulator: Browser) {
     const identifier = emulator.isAndroid ? PACKAGE_NAME : BUNDLE_ID
 
     const appIdentifier = {

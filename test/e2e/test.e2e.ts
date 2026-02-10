@@ -1,4 +1,5 @@
 import { expect } from '@wdio/globals'
+import type { Browser } from 'webdriverio'
 import LoginPage from '../../pageobjects/LoginPage'
 import SecurePage from '../../pageobjects/SecurePage'
 import TabBar from '../../screenobjects/components/TabBar'
@@ -35,7 +36,7 @@ describe('Open mobile and browser instances and perform actions in both within t
     })
 
     it('Perform login in both browser and mobile app simultaneously', async () => {
-        const emulator = getDeviceFromCapabilities('mobile')
+        const emulator = getDeviceFromCapabilities('mobile') as Browser
         const browser = getDeviceFromCapabilities('browser')
 
         await Promise.all([

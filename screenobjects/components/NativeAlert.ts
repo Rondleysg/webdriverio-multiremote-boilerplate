@@ -1,8 +1,9 @@
+import { PACKAGE_NAME } from 'test-data/e2e/Constants'
 import { getDeviceFromCapabilities } from '../../lib/utils'
 
 const SELECTORS = {
     ANDROID: {
-        ALERT_TITLE: '*//android.widget.TextView[@resource-id="android:id/alertTitle"]',
+        ALERT_TITLE: `*//android.widget.TextView[@resource-id="${PACKAGE_NAME}:id/alert_title"]`,
         ALERT_MESSAGE: '*//android.widget.TextView[@resource-id="android:id/message"]',
         ALERT_BUTTON: '*//android.widget.Button[@text="{BUTTON_TEXT}"]',
     },

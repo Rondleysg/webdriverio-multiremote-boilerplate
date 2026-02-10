@@ -1,6 +1,7 @@
 
 import 'dotenv/config'
 import { getDeviceFromCapabilities } from 'lib/utils';
+import { PACKAGE_NAME } from 'test-data/e2e/Constants';
 
 exports.config = {
     //
@@ -27,7 +28,7 @@ exports.config = {
     // The path of the spec files will be resolved relative from the directory of
     // of the config file unless it's absolute.
     //
-    specs: ['../test/specs/**/*.ts'],
+    specs: ['../test/e2e/**/*.ts'],
     // Patterns to exclude.
     exclude: [
     // 'path/to/excluded/files'
@@ -174,16 +175,24 @@ exports.config = {
    */
     before: async function (_capabilities: WebdriverIO.Capabilities, _specs: WebdriverIO.Config['specs']) {
         const emulator = getDeviceFromCapabilities('mobile');
-        const caps = _capabilities as Record<string, unknown> | undefined;
-        const platform = (caps?.['appium:platformName'] ?? caps?.platformName) as string | undefined;
-        const isAndroid = platform === 'Android';
 
-        if (isAndroid) {
-            await (emulator as { updateSettings(settings: object): Promise<void> }).updateSettings({
-                waitForSelectorTimeout: 3 * 1000,
-                waitForIdleTimeout: 1,
-            })
-        }
+        if (emulator.isAndroid) {
+            await emulator.updateSettings({
+              waitForSelectorTimeout: 3 * 1000,
+              waitForIdleTimeout: 1,
+            });
+          }
+
+          const isAppInstalled = await emulator.isAppInstalled(PACKAGE_NAME);
+          console.info('APP INSTALLED: ', isAppInstalled);
+
+          const appState = await emulator.queryAppState(PACKAGE_NAME);
+
+          if (appState > 1) {
+            await emulator.terminateApp(PACKAGE_NAME, { appId: PACKAGE_NAME });
+          }
+
+          await emulator.activateApp(PACKAGE_NAME);
     },
     /**
    * Runs before a WebdriverIO command gets executed.
