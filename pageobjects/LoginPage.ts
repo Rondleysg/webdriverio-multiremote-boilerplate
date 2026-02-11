@@ -1,5 +1,5 @@
-import Page from './Page.js'
-import { getDeviceFromCapabilities } from '../lib/utils.js'
+import Page from "./Page"
+import { getDeviceFromCapabilities } from "lib/Utils"
 
 /**
  * sub page containing specific selectors and methods for a specific page

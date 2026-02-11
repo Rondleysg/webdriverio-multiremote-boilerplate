@@ -1,6 +1,6 @@
 import { driver } from '@wdio/globals'
 
-export function getDeviceFromCapabilities(key: string): WebdriverIO.Browser {
+export function getDeviceFromCapabilities(key: "mobile" | "browser"): WebdriverIO.Browser {
     const device = driver[key as keyof typeof driver] as WebdriverIO.Browser
     return device
 }

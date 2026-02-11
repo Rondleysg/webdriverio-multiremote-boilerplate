@@ -1,0 +1,12 @@
+{
+  "login": {
+    "browser": {
+      "username": "tomsmith",
+      "password": "SuperSecretPassword!"
+    },
+    "app": {
+      "username": "test@webdriver.io",
+      "password": "Test1234!"
+    }
+  }
+}

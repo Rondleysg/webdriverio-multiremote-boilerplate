@@ -1,4 +1,4 @@
-import { getDeviceFromCapabilities } from '../lib/utils'
+import { getDeviceFromCapabilities } from '../lib/Utils'
 
 export default class AppScreen {
     private selector: string

@@ -1,5 +1,5 @@
-import { PACKAGE_NAME } from 'test-data/e2e/Constants'
-import { getDeviceFromCapabilities } from '../../lib/utils'
+import { PACKAGE_NAME } from 'test-data/Constants'
+import { getDeviceFromCapabilities } from '../../lib/Utils'
 
 const SELECTORS = {
     ANDROID: {

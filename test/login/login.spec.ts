@@ -2,20 +2,23 @@ import { expect } from '@wdio/globals'
 import type { Browser } from 'webdriverio'
 import LoginPage from '../../pageobjects/LoginPage'
 import SecurePage from '../../pageobjects/SecurePage'
-import TabBar from '../../screenobjects/components/TabBar'
-import LoginScreen from '../../screenobjects/LoginScreen'
-import NativeAlert from '../../screenobjects/components/NativeAlert'
-import HomeScreen from '../../screenobjects/HomeScreen'
-import { getDeviceFromCapabilities } from '../../lib/utils'
+import inputs from '../../test-data/login/inputs.json'
+import messages from '../../test-data/login/messages.json'
+import TabBar from 'screenobjects/components/TabBar'
+import LoginScreen from 'screenobjects/LoginScreen'
+import NativeAlert from 'screenobjects/components/NativeAlert'
+import { getDeviceFromCapabilities } from 'lib/Utils'
 import { reLaunchApp } from 'fixtures'
+import HomeScreen from 'screenobjects/HomeScreen'
+
 
 describe('Open mobile and browser instances and perform actions in both within the same test', () => {
 
     async function loginInBrowser() {
         await LoginPage.open()
-        await LoginPage.login('tomsmith', 'SuperSecretPassword!')
+        await LoginPage.login(inputs.login.browser.username, inputs.login.browser.password)
         await expect(SecurePage.flashAlert).toBeExisting()
-        await expect(SecurePage.flashAlert).toHaveText(expect.stringContaining('You logged into a secure area!'))
+        await expect(SecurePage.flashAlert).toHaveText(expect.stringContaining(messages.loginSuccessMessage))
     }
 
     async function loginInApp() {
@@ -23,7 +26,7 @@ describe('Open mobile and browser instances and perform actions in both within t
         await TabBar.openLogin()
         await LoginScreen.waitForIsShown(true)
         await LoginScreen.tapOnLoginContainerButton()
-        await LoginScreen.submitLoginForm({ username: 'test@webdriver.io', password: 'Test1234!' })
+        await LoginScreen.submitLoginForm({ username: inputs.login.app.username, password: inputs.login.app.password })
         await NativeAlert.waitForIsShown()
         await expect(await NativeAlert.text()).toContain('Success')
         await NativeAlert.topOnButtonWithText('OK')

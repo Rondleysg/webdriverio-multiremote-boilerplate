@@ -1,4 +1,4 @@
-import { getDeviceFromCapabilities } from '../lib/utils.js'
+import { getDeviceFromCapabilities } from '../lib/Utils.js'
 import AppScreen from './AppScreen.js'
 
 const SELECTORS = {

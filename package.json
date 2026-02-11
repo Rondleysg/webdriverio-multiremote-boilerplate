@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Automação de testes com WebdriverIO para QA",
   "license": "MIT",
+  "repository": "github:QueroDelivery/webdriverio-multiremote-boilerplate",
   "scripts": {
     "build": "tsc --noEmit",
     "test-android": "wdio run ./configs/wdio.android.conf.ts",

@@ -1,4 +1,4 @@
-import { getDeviceFromCapabilities } from '../lib/utils'
+import { getDeviceFromCapabilities } from '../lib/Utils'
 
 /**
 * main page object containing all methods, selectors and functionality
