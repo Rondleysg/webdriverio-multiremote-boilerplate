@@ -1,6 +1,10 @@
-# Appium and Chromedriver Multiremote WebdriverIO Boilerplate
+# QA – Automação de testes com WebdriverIO
 
-This is a boilerplate project to help show how to run webdriverio multi-remote using appium and chromedriver service with the latest WebdriverIO.
+Repositório **padrão para automação de testes QA** com **WebdriverIO** (browser + app nativo via Appium) e **TypeScript**. E2E em browser (Chrome) e app nativo (Android/iOS) com suporte a multiremote no mesmo teste.
+
+**Documentação detalhada:** pasta [docs/](docs/) — um arquivo por seção (estrutura, fixtures, test-data, como adicionar teste/fluxo, ambiente). Índice em [docs/README.md](docs/README.md).
+
+**Agentes / LLMs:** [AGENTS.md](AGENTS.md) — convenções, comandos e referências às docs para trabalho automatizado.
 
 <br>
 <div align="center">
@@ -8,80 +12,164 @@ This is a boilerplate project to help show how to run webdriverio multi-remote u
 </div>
 <br>
 
-*WebdriverIO is a progressive automation framework built to automate modern web and mobile applications. It simplifies the interaction with your app and provides a set of plugins that help you create a scalable, robust and stable test suite.*
-<br>
-
 > [!IMPORTANT]
-> This boilerplate uses the WebdriverIO native demo app which can be found [here](https://github.com/webdriverio/native-demo-app).
+> Este boilerplate usa o [WebdriverIO native demo app](https://github.com/webdriverio/native-demo-app). Coloque os binários (APK/IPA) na pasta `./apps` conforme [docs/08-ambiente-e-configuração.md](docs/08-ambiente-e-configuração.md).
 
 > [!NOTE]
-> Multiremote is not meant to execute all your tests in parallel. It is intended to help coordinate multiple browsers and/or mobile devices for special integration tests (e.g. chat applications).
+> Multiremote não executa todos os testes em paralelo; serve para coordenar browser e dispositivo no mesmo teste (ex.: integração browser + app).
 
-## Based on
+---
 
-This boilerplate is currently based on:
+## Stack
 
-- **WebdriverIO:** `9.x`
-- **Appium:** `3.x`
-- **Chromedriver**
-- **Mocha**
+- **WebdriverIO** 9.x, **Appium** 3.x, **Chromedriver**, **Mocha**
+- **TypeScript** (strict mode)
+- Page Objects (web) e Screen Objects (app)
+- Configs: [configs/wdio.shared.conf.ts](configs/wdio.shared.conf.ts), [wdio.android.conf.ts](configs/wdio.android.conf.ts), [wdio.ios.conf.ts](configs/wdio.ios.conf.ts)
 
-## Features
+---
 
-- Web + Mobile Tests - Multiremote
-- Appium
-- Chromedriver
-- Mocha
-- [Page Object](pageobjects) Model
-- Typescript
-- Native Android and iOS apps
-- Sauce Labs integration
-- ESLint
-- Tests examples for Login in <http://the-internet.herokuapp.com> and [WebdriverIO native demo app](https://github.com/webdriverio/native-demo-app)
+## Comandos
 
-## Installation
+Execute na raiz do projeto:
 
-1. Clone this project by running
+| Comando | Descrição |
+|---------|-----------|
+| `npm run test-android` | Roda testes no Android (emulador/dispositivo) + browser |
+| `npm run test-ios` | Roda testes no iOS (simulador/dispositivo) + browser |
+| `npm run test-android-headless` | Android com browser em modo headless |
+| `npm run test-ios-headless` | iOS com browser em modo headless |
+| `npm run build` | Verificação TypeScript (`tsc --noEmit`) |
 
-```sh
-git clone https://github.com/Rondleysg/wdio-multiremote-appium-chromedriver-boilerplate.git
+### Rodar só um fluxo
+
+```bash
+wdio run ./configs/wdio.android.conf.ts --spec test/<fluxo>/**/*.ts
+wdio run ./configs/wdio.ios.conf.ts --spec test/<fluxo>/**/*.ts
 ```
 
-2. Install all dependencies
+Substitua `<fluxo>` pelo nome da pasta (ex.: `login`). Ver [docs/09-comandos-e-opcoes.md](docs/09-comandos-e-opcoes.md).
+
+---
+
+## Estrutura do projeto
+
+| Diretório | Papel |
+|-----------|--------|
+| **test/** | Specs por fluxo (ex.: `test/login/*.spec.ts`); um fluxo = uma pasta |
+| **test-data/** | Constantes em `Constants.ts`; dados por fluxo em `<fluxo>/inputs.json`, `messages.json` (opcional `builder.ts`) |
+| **pageobjects/** | Page Objects para páginas web (browser) |
+| **screenobjects/** | Screen Objects para telas do app nativo + `components/` |
+| **fixtures/** | Funções reutilizáveis (ex.: `loginFixture`, `reLaunchApp`) |
+| **lib/** | `env.ts`, `data-factory.ts`, `Utils.ts` (getDeviceFromCapabilities, seletores app) |
+| **configs/** | Configurações WebdriverIO (shared, android, ios, sauce) |
+| **docs/** | Documentação (estrutura, fixtures, test-data, novo teste, novo fluxo, ambiente, comandos) |
+
+Ver [docs/02-estrutura-de-diretórios.md](docs/02-estrutura-de-diretórios.md).
+
+---
+
+## Agentes QA (WebdriverIO)
+
+O projeto usa agentes de QA para manter convenções, adicionar testes/fluxos/dados/fixtures ou revisar código.
+
+| Agente | Quando usar |
+|--------|-------------|
+| **agt-qa-webdriverio-context** | Dúvidas sobre estrutura, comandos ou documentação (não edita código). |
+| **agt-qa-webdriverio-maintain** | Editar specs ou refatorar alinhado às convenções. |
+| **agt-qa-webdriverio-add-test** | Adicionar um novo teste (browser, app ou E2E). |
+| **agt-qa-webdriverio-add-flow** | Adicionar um novo fluxo (pastas, specs, test-data). |
+| **agt-qa-webdriverio-add-fixture** | Adicionar ou estender fixture em `fixtures/index.ts`. |
+| **agt-qa-webdriverio-add-data** | Adicionar ou estender test-data (inputs.json, builder.ts). |
+| **agt-qa-webdriverio-code-reviewer** | Revisar código QA e gerar resumo de melhorias. |
+
+Skills em [.cursor/skills/qa/](.cursor/skills/qa/). Ver [AGENTS.md](AGENTS.md).
+
+---
+
+## Checklist: novo fluxo
+
+1. Criar pasta em `test/<fluxo>/` (ex.: `test/login/`).
+2. Se houver dados: criar `test-data/<fluxo>/` com `inputs.json` (e opcional `messages.json`, `builder.ts`).
+3. Escrever specs: importar `expect` de `@wdio/globals`, usar `lib/Utils` e Page/Screen Objects.
+4. Se outro baseURL ou app: configurar em [configs/](configs/) ou [docs/08-ambiente-e-configuração.md](docs/08-ambiente-e-configuração.md).
+
+Ver [docs/07-como-adicionar-novo-fluxo.md](docs/07-como-adicionar-novo-fluxo.md).
+
+---
+
+## Checklist: novo teste
+
+- Arquivo em `test/<fluxo>/` com extensão `.ts` (ex.: `test/login/login.spec.ts`).
+- Importar `expect` de `@wdio/globals`; usar `getDeviceFromCapabilities('browser')` ou `getDeviceFromCapabilities('mobile')` de `lib/Utils` (ou Page/Screen Objects).
+- Dados em `test-data` quando houver inputs reutilizáveis.
+- Nome descritivo e Arrange-Act-Assert.
+
+Ver [docs/06-como-adicionar-novo-teste.md](docs/06-como-adicionar-novo-teste.md).
+
+---
+
+## Instalação
+
+1. Clone o repositório e instale as dependências:
 
 ```sh
-yarn
+git clone <url-do-repositorio>
+cd webdriverio-multiremote-boilerplate
+npm install
 ```
+
+2. Configure o ambiente: copie [.env.example](.env.example) para `.env` e ajuste (device names, URLs). Não commite `.env`.
+
+3. Coloque os binários do app (APK para Android, IPA para iOS) na pasta `./apps`. Downloads em [WebdriverIO native demo app – Releases](https://github.com/webdriverio/native-demo-app/releases).
+
+4. Ajuste os configs em [configs/](configs/) para o seu emulador/dispositivo (ver [docs/08-ambiente-e-configuração.md](docs/08-ambiente-e-configuração.md)).
 
 > [!TIP]
-> Use the [appium-installer](https://github.com/AppiumTestDistribution/appium-installer) package to setup Appium on your local machine. This will also help you configure Android Emulators/ iOS Simulators.
+> Use o [appium-installer](https://github.com/AppiumTestDistribution/appium-installer) para configurar Appium e emuladores/simuladores.
 
-1. Download the application files (`.zip` / `.apk`) with version >= `1.0.0`, which can be found [here](https://github.com/webdriverio/native-demo-app/releases), and place them in the `./apps` folder.
+---
 
-2. Adjust the configuration files for [Android](./wdio.local.conf.ts) and [iOS](./wdio.local.conf.ts) relative to the device configuration you created on your local machine. If you prefer, you can create a separate configuration file for each.
+## O que é multiremote
 
-3. Running tests locally
-    - **Multiremote with Android:** `yarn test-android`
-    - **Multiremote with iOS:** `yarn test-ios`
-
-### What is multi-remote
-
-The multiremote feature in webdriverio allows to run multiple browser instances with different capabilities and access them within the same test example. In our project we use as an example the use of a mobile device together with a chrome browser
+O multiremote do WebdriverIO permite rodar browser e app no mesmo teste e acessá-los por nome (ex.: `browser`, `mobile`). Use `getDeviceFromCapabilities('browser')` e `getDeviceFromCapabilities('mobile')` de [lib/Utils.ts](lib/Utils.ts):
 
 ```typescript
-export function getDeviceFromCapabilities(key: string): WebdriverIO.Browser {
-    const device = driver[key as keyof typeof driver] as WebdriverIO.Browser
-    return device
-}
+import { getDeviceFromCapabilities } from '../lib/Utils'
 
-//where 'emulator' can be appium and 'browser' can be chromedriver
-const emulator = getDeviceFromCapabilities('mobile')
 const browser = getDeviceFromCapabilities('browser')
-emulator.click()
-browser.click()
+const mobile = getDeviceFromCapabilities('mobile')
+// browser.url(...), mobile.$('~selector'), etc.
 ```
 
-## Contact
+---
 
-- **Email**: <rondleyemail@gmail.com>
-- **Linkedin**: <https://www.linkedin.com/in/rondleysg/>
+## Versionamento (semantic-release)
+
+O **semantic-release** roda no GitHub Actions após o job de build e testes em cada push na branch **main**. Ele analisa os commits (conventional commits), calcula a próxima versão, atualiza `package.json` e gera o `CHANGELOG.md`, fazendo commit e tag no repositório.
+
+**Conventional commits** (use no título do commit):
+
+| Prefixo | Efeito na versão | Exemplo |
+|--------|-------------------|--------|
+| `feat:` | Minor (1.0.0 → 1.1.0) | `feat: add login flow tests` |
+| `fix:` | Patch (1.0.0 → 1.0.1) | `fix: correct baseURL in env` |
+| `docs:`, `chore:`, `refactor:`, `test:` | Sem bump | `docs: update README` |
+| `BREAKING CHANGE:` no corpo ou `!` no escopo | Major (1.0.0 → 2.0.0) | `feat!: change fixture API` |
+
+Configuração em [.releaserc.json](.releaserc.json); workflow em [.github/workflows/ci.yml](.github/workflows/ci.yml). O pacote **não** é publicado no npm (`npmPublish: false`); apenas a versão local e o changelog são atualizados.
+
+---
+
+## Documentação completa
+
+- **Estrutura e convenções:** [docs/02-estrutura-de-diretórios.md](docs/02-estrutura-de-diretórios.md)
+- **Fixtures:** [docs/03-fixtures.md](docs/03-fixtures.md)
+- **Test data:** [docs/04-test-data.md](docs/04-test-data.md)
+- **Lib:** [docs/05-lib.md](docs/05-lib.md)
+- **Novo teste:** [docs/06-como-adicionar-novo-teste.md](docs/06-como-adicionar-novo-teste.md)
+- **Novo fluxo:** [docs/07-como-adicionar-novo-fluxo.md](docs/07-como-adicionar-novo-fluxo.md)
+- **Ambiente e configuração:** [docs/08-ambiente-e-configuração.md](docs/08-ambiente-e-configuração.md)
+- **Comandos e opções:** [docs/09-comandos-e-opcoes.md](docs/09-comandos-e-opcoes.md)
+
+Índice: [docs/README.md](docs/README.md).

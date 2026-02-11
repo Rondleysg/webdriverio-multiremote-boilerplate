@@ -13,7 +13,7 @@ Este repositório é o padrão de automação de testes QA com **WebdriverIO** (
 ## Fluxo de uso
 
 1. **Configuração**: variáveis de ambiente (opcional) em `.env`; configs em `configs/wdio.*.conf.ts` (shared, android, ios, sauce).
-2. **Testes**: specs em `test/specs/` ou `test/e2e/` usam `describe`/`it` (Mocha), importam `expect` de `@wdio/globals`, Page Objects e `lib/Utils` (ex.: `getDeviceFromCapabilities`) para acessar browser ou mobile.
+2. **Testes**: specs em `test/<fluxo>/` (ex.: `test/login/`) usam `describe`/`it` (Mocha), importam `expect` de `@wdio/globals`, Page Objects / Screen Objects e `lib/Utils` (ex.: `getDeviceFromCapabilities`) para acessar browser ou mobile.
 3. **Execução**: `npm run test-android`, `npm run test-ios`, ou `wdio run ./configs/wdio.android.conf.ts` (e variantes headless).
 
 ## Documentação por seção

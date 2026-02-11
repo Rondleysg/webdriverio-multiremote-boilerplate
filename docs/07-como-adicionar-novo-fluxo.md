@@ -1,11 +1,11 @@
 # Como adicionar um novo fluxo
 
-Um **fluxo** é um conjunto de testes para um mesmo contexto (ex.: login, onboarding, checkout). Cada fluxo pode ter specs em `test/` e, se houver dados, em `test-data/`.
+Um **fluxo** é um conjunto de testes para um mesmo contexto (ex.: login, onboarding, checkout). Cada fluxo tem uma pasta em `test/<fluxo>/` e, se houver dados, em `test-data/<fluxo>/`. Exemplo no repositório: fluxo **login** em `test/login/` com `test-data/login/inputs.json` e `messages.json`.
 
 ## Checklist
 
-1. **Criar pasta/arquivos de spec** em `test/specs/<fluxo>/` ou `test/e2e/` (conforme o tipo de teste).
-2. **Criar pasta de dados** (se houver inputs): `test-data/<fluxo>/` ou `test-data/api/<fluxo>/`, `test-data/ui/<fluxo>/`.
+1. **Criar pasta/arquivos de spec** em `test/<fluxo>/` (ex.: `test/meufluxo/login.spec.ts`).
+2. **Criar pasta de dados** (se houver inputs): `test-data/<fluxo>/` com `inputs.json`, opcionalmente `messages.json` ou `builder.ts`.
 3. **Definir inputs/constantes**: `inputs.json` (ou `inputs.ts`), ou `Constants.ts`; se precisar variar muito, adicionar `builder.ts` usando `lib/data-factory`.
 4. **Escrever os specs**: importar `expect` de `@wdio/globals`; usar Page Objects / Screen Objects e `lib/Utils`; para dados, importar de test-data ou usar builder.
 5. **Configuração**: se o fluxo usar outra baseURL ou outro app, configurar em `configs/` ou via variáveis de ambiente (ver [08 - Ambiente e configuração](08-ambiente-e-configuração.md)).
@@ -15,14 +15,12 @@ Um **fluxo** é um conjunto de testes para um mesmo contexto (ex.: login, onboar
 ### 1. Criar specs do fluxo
 
 ```text
-test/specs/meufluxo/
+test/meufluxo/
     login.spec.ts
     checkout.spec.ts
 ```
 
-Ou em `test/e2e/` se for um fluxo que mistura browser e app no mesmo arquivo.
-
-Certifique-se de que o padrão `specs` em `configs/wdio.shared.conf.ts` inclui esses arquivos (ex.: `../test/specs/**/*.ts`).
+O config shared usa `../test/**/*.ts`, então qualquer arquivo em `test/<fluxo>/**/*.ts` já é incluído (incluindo fluxos que misturam browser e app no mesmo teste).
 
 ### 2. Criar pasta de dados (opcional)
 
@@ -45,7 +43,7 @@ test-data/meufluxo/
 
 ### 4. Exemplo de spec (browser)
 
-**test/specs/meufluxo/login.spec.ts**
+**test/meufluxo/login.spec.ts**
 
 ```ts
 import { expect } from '@wdio/globals'
@@ -63,7 +61,7 @@ describe('Meu fluxo - Login', () => {
 
 ### 5. Exemplo de spec (app)
 
-**test/specs/meufluxo/login-app.spec.ts**
+**test/meufluxo/login-app.spec.ts**
 
 ```ts
 import { expect } from '@wdio/globals'

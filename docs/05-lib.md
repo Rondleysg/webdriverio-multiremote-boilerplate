@@ -50,14 +50,16 @@ it('cadastro com email único', async () => {
 - **getElementsByTestIDApp(selector, mobile)**: mesma ideia para múltiplos elementos.
 - **getElementByAccessibilityLabelApp(selector, mobile)**: elemento por content-desc (Android) ou accessibility label (iOS).
 - **getElementByTextApp(selector, mobile)**: elemento por texto.
-- **reLaunchApp(emulator)**: encerra e reabre o app no dispositivo/emulador (útil entre testes ou cenários).
 
-**Uso:** importar de `lib/Utils` (ou `../lib/Utils` conforme o path). O config shared importa `getDeviceFromCapabilities` de `lib/Utils` no hook `before` (ex.: para `updateSettings` no Android).
+A função **reLaunchApp(emulator)** está em `fixtures/` (não em `lib/Utils`); importe de `fixtures` quando precisar reiniciar o app.
+
+**Uso:** importar de `lib/Utils` (ou `lib/Utils` via path do tsconfig). O config shared importa `getDeviceFromCapabilities` de `lib/Utils` no hook `before` (ex.: para `updateSettings` no Android).
 
 **Exemplo:**
 
 ```ts
-import { getDeviceFromCapabilities, reLaunchApp } from '../lib/Utils'
+import { getDeviceFromCapabilities } from 'lib/Utils'
+import { reLaunchApp } from 'fixtures'
 
 const browser = getDeviceFromCapabilities('browser')
 const mobile = getDeviceFromCapabilities('mobile')

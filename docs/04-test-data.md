@@ -6,26 +6,24 @@ Os dados de entrada e constantes dos testes ficam em `test-data/`, organizados p
 
 ```
 test-data/
-└── e2e/
-    └── Constants.ts    # Constantes do fluxo E2E (ex.: BUNDLE_ID, PACKAGE_NAME)
+├── Constants.ts       # Constantes globais (BUNDLE_ID, PACKAGE_NAME)
+└── login/
+    ├── inputs.json    # Dados de login (browser e app)
+    └── messages.json  # Mensagens de asserção (ex.: loginSuccessMessage)
 ```
 
-- **Constants.ts**: identificadores do app (bundle ID para iOS, package name para Android), usados por `lib/Utils` (ex.: `reLaunchApp`) e por configs quando necessário.
-- Para novos fluxos, pode-se criar `test-data/<fluxo>/` com `inputs.json`, `inputs.ts` ou `builder.ts`.
+- **Constants.ts**: identificadores do app (bundle ID para iOS, package name para Android), usados pelo config e por `fixtures/reLaunchApp`.
+- Por fluxo: `test-data/<fluxo>/` com `inputs.json`, `messages.json` (opcional) ou `builder.ts`. Exemplo: `test-data/login/` e specs em `test/login/`.
 
 ## Estrutura sugerida para novos fluxos
 
 ```
 test-data/
-├── e2e/
-│   └── Constants.ts
-├── api/
-│   └── <fluxo>/
-│       └── inputs.json   # ou inputs.ts
-└── ui/
-    └── <fluxo>/
-        ├── inputs.json   # ou inputs.ts
-        └── builder.ts    # opcional
+├── Constants.ts         # já existe; use para constantes globais do app
+├── <fluxo>/
+│   ├── inputs.json      # ou inputs.ts
+│   ├── messages.json    # opcional (mensagens de UI/asserção)
+│   └── builder.ts       # opcional (geração de dados)
 ```
 
 - **inputs.json / inputs.ts**: entradas estáticas (um objeto ou vários cenários).
@@ -61,5 +59,5 @@ export function createFormInput(overrides?: Partial<FormInput>): FormInput {
 
 ## Quando usar o quê
 
-- **Só constantes ou inputs estáticos**: use `test-data/e2e/Constants.ts` ou `inputs.json` e importe no spec ou em `lib/Utils`.
+- **Só constantes ou inputs estáticos**: use `test-data/Constants.ts` ou `test-data/<fluxo>/inputs.json` e importe no spec.
 - **Precisa variar alguns campos**: crie `builder.ts` usando `randomEmail()`, `randomString()`, etc. de `lib/data-factory` e use o builder no spec.
