@@ -63,6 +63,7 @@ config.capabilities = {
 }
 
 config.services = [
+    ...config.services,
     [
         'appium',
         {
